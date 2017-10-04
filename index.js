@@ -1,3 +1,5 @@
+let result_str = process.argv.reduce((outRes, value, index)=>{
+    return index > 1 ? (outRes += `${value}, `) : outRes;
+}, "");
 
-const name = process.argv[2];
-console.log(`Hi ${name}!`);
+console.log(`Hi param: ${result_str}`);
