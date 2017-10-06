@@ -1,16 +1,43 @@
 let fs = require('fs');
 let path = require(`path`);
-if(!fs.existsSync(process.argv[2])){
-    console.log("Неправильный путь");
-    return;
-}
-if (!fs.existsSync("./config.json")) {
-	console.log("Конфига нет!");
-	return;
-}
-let copyrightStr = JSON.parse(fs.readFileSync("./config.json")).copyright;
 
-let scriptStr = "let fs = require(`fs`);\n\
+if(!fs.exists(process.argv[2])){
+    
+}
+fs.exists(process.argv[2], (chk) => {
+    if(!chk){
+        console.log("Неправильный путь");
+        return;
+    }
+    else
+        cheskConfig();
+})
+
+const cheskConfig = () => {
+    fs.exists("./config.json", (chk)=>{
+        if(!chk){
+            console.log("Конфига нет!");
+            return;
+        }
+        else
+            getConfigStr();
+    })
+}
+let copyrightStr = '';
+const getConfigStr = () => {
+    fs.readFile("./config.json", (err, data) => {
+        copyrightStr = JSON.parse(data).copyright;
+        fs.writeFile("summary.js", scriptStr, (err)=>{
+            if(err){
+                console.log("Ошибка записи в файл!");
+                return;
+            }
+        });
+    })
+}
+
+let scriptStr = 
+"let fs = require(`fs`);\n\
 let path = require(`path`);\n\
 const ListPath = (inputPath, folder, copyrightParam) => {\n\
     fs.readdir(inputPath, (err, files)=>{\n\
@@ -62,16 +89,14 @@ const ListPath = (inputPath, folder, copyrightParam) => {\n\
     })\n\
 }\n\
 let summaryPath = '"+process.argv[2]+"\\\\Summary';\n\
-if(!fs.existsSync(summaryPath))\n\
-{\n\
-    fs.mkdirSync(summaryPath)\n\
-}\n\
-\n\
+fs.exists(summaryPath, (chk)=>{\n\
+    if(!chk){\n\
+        fs.mkdir(summaryPath, (err)=>{});\n\
+    }\n\
+});\n\
 ListPath('"+process.argv[2]+"', '', '"+copyrightStr+"');\n\
 setTimeout(()=>{\n\
     fs.watch(summaryPath, (eventType, filename) =>{\n\
         console.log(`${new Date()} ${eventType} - ${filename}`)\n\
     })\n\
 }, 1000);"
-
-fs.writeFileSync("summary.js", scriptStr);
