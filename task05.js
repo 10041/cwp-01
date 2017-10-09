@@ -1,9 +1,7 @@
 let fs = require('fs');
 let path = require(`path`);
 
-if(!fs.exists(process.argv[2])){
-    
-}
+
 fs.exists(process.argv[2], (chk) => {
     if(!chk){
         console.log("Неправильный путь");
