@@ -18,11 +18,11 @@ const cheskConfig = () => {
             return;
         }
         else
-            getConfigStr();
+            getConfigStrAndWriteFile();
     })
 }
 var copyrightStr = '';
-const getConfigStr = () => {
+const getConfigStrAndWriteFile = () => {
     fs.readFile("./config.json", (err, data) => {
         copyrightStr = JSON.parse(data).copyright;
         fs.writeFile("summary.js", retScriptStr(), (err)=>{
